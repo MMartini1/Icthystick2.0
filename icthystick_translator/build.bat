@@ -1,0 +1,1 @@
+python -m PyInstaller icthystick_translate.py --onefile
