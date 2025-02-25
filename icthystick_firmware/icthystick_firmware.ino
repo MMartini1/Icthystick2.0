@@ -130,7 +130,6 @@ void run_measurement()
     system_state.measurement_state.last_read = millis();
     long meas = make_measurement_us();
     //Serial.println(meas);
-
     switch (system_state.measurement_state.state)
     {
       case MEASUREMENT_STATE_WAITING:

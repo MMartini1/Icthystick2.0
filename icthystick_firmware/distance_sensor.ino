@@ -122,9 +122,14 @@ void calculate_calibration()
 long make_measurement_us()
 {
   long retval = -1;
+  noInterrupts();
   digitalWrite(D3,1);
-  //delayMicroseconds(1);
+  for (int i=0; i<10; i++)
+  {
+  __asm__("nop\n\t");
+  }
   digitalWrite(D3,0);
+  interrupts();
   start_time = micros();
   delayMicroseconds(BLANK_TIME_US);
   done = false;
@@ -133,6 +138,7 @@ long make_measurement_us()
   {
     if ((micros() - start_time)   > MAX_DELAY_US)
     {
+
       break;  
     }
   }
@@ -141,7 +147,9 @@ long make_measurement_us()
   if (done)
   {
     retval = stop_time - start_time;
+
     //Serial.println((stop_time - start_time)/9.0462);
   }  
+
   return retval;
 }
