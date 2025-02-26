@@ -42,6 +42,7 @@ typedef struct
   calibration_measurement_t pending_calibration;
   unsigned long last_read;
   unsigned long estimate_maximum_value;
+  unsigned int output_format = DEFAULT_OUTPUT_FORMAT;
   
   
 } measurement_state_t;

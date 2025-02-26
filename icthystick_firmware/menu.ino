@@ -172,8 +172,10 @@ void handle_prev_button()
 
 void draw_splash_screen()
 {
+  move_cursor(0, 0);
+  LCD_Serial.write("IFMB S/N ");   
+  LCD_Serial.write(IFMB);   
   move_cursor(1, 0);
-  //LCD_Serial.write("Icthystick V2.0.0");   
   LCD_Serial.write("Icthystick V");
   LCD_Serial.write(VER);   
   move_cursor(2, 0);
@@ -241,7 +243,7 @@ void draw_lcd_main_background()
 void update_lcd_display_backlight()
 {
   move_cursor(3, 15);
-  Serial.println("Update backlight");
+  if(DEBUG) Serial.println("Update backlight");
   Serial.println(display_state->display_backlight_on);
   if (display_state->display_backlight_on){
     LCD_Serial.write(" ON"); 
@@ -434,7 +436,7 @@ void draw_lcd_save_results_background()
 
 void switch_menu_to_backlight()
 {
-  Serial.println("Switch to Display");
+  if (DEBUG) Serial.println("Switch to Display");
 
   display_state->active_menu = &display_state->display_menu;
   display_state->active_menu->redraw();
@@ -442,7 +444,7 @@ void switch_menu_to_backlight()
 
 void switch_menu_to_main()
 {
-  Serial.println("Switch to Main");
+  if (DEBUG) Serial.println("Switch to Main");
   display_state->active_menu = &display_state->main_menu;
   display_state->active_menu->redraw();
 }

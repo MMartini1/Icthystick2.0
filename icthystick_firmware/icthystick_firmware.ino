@@ -52,7 +52,7 @@ void setup() {
   }
 
 
-  Serial.println("Bluetooth® Low Energy Central - Peripheral Explorer");  
+  if (DEBUG) Serial.println("Bluetooth® Low Energy Central - Peripheral Explorer");  
   BLE.setLocalName("IcthyStick");
   BLE.setAdvertisedService(newService);
   newService.addCharacteristic(new_measurement);
@@ -79,12 +79,32 @@ void send_ble_measurement()
 //
 //  if (central) {  // if a central is connected to the peripheral
 
-    Serial.print("Connected to central: ");
+    if (DEBUG) Serial.print("Connected to central: ");
     
-    char send_str[20];
-    sprintf(send_str, "%7.1f", system_state.display_state.current_measurement);
-    new_measurement.writeValue(send_str);  
+    char send_str[50]; // increased from 20 to accommodate scantrol format
+    float m;
 
+    // current_measurement is in mm
+    switch (system_state.measurement_state.output_format){
+      case ICKY_FORMAT:  // in mm or cm?
+        if(system_state.display_state.display_units == UNIT_MM) {    
+          sprintf(send_str, "$IFMB%s,%05.1f,mm\n", IFMB, system_state.display_state.current_measurement);
+        } else {
+          sprintf(send_str, "$IFMB%s,%05.1f,cm\n", IFMB, system_state.display_state.current_measurement/10.0);
+        }
+        break;
+      case SCAN_FORMAT:  // in cm
+        if(system_state.display_state.display_units == UNIT_MM) 
+          m = system_state.display_state.current_measurement / 10.0;
+        sprintf(send_str, "0001 001 LENGTH %019.1f 001 #8B\n", m);
+        break;
+      case LMNO_FORMAT:  // in mm
+        sprintf(send_str, "%05.1frr\n", system_state.display_state.current_measurement);
+        break;
+      default:  // CFF format
+        sprintf(send_str, "%7.1f", system_state.display_state.current_measurement);
+    }
+    new_measurement.writeValue(send_str);  // this goes to Bluetooth
     // MM 2/26/2025 add this line to see measurement on serial console
     Serial.println(send_str);
 //  }

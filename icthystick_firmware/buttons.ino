@@ -48,7 +48,7 @@ void read_buttons()
     {
       button_state->button_menu_released = false;
       button_state->button_menu_pressed = true;
-      Serial.println("MENU");
+      if (DEBUG) Serial.println("MENU");
 
       handle_menu_button();
     }
@@ -59,7 +59,7 @@ void read_buttons()
       {
         button_state->button_menu_released = true;
         button_state->button_menu_pressed = false;    
-        Serial.println("menu released");
+        if (DEBUG) Serial.println("menu released");
       }
   }
   buttonVal = digitalRead(BUTTON_ENTER);
@@ -69,7 +69,7 @@ void read_buttons()
     {
       button_state->button_enter_released = false;
       button_state->button_enter_pressed = true;
-      Serial.println("ENTER");
+      if (DEBUG) Serial.println("ENTER");
 
       handle_enter_button();
     }
@@ -80,7 +80,7 @@ void read_buttons()
       {
         button_state->button_enter_released = true;
         button_state->button_enter_pressed = false;    
-        Serial.println("enter released");
+        if (DEBUG) Serial.println("enter released");
       }
   }  
 
@@ -91,7 +91,7 @@ void read_buttons()
     {
       button_state->button_next_released = false;
       button_state->button_next_pressed = true;
-      Serial.println("NEXT");
+      if (DEBUG) Serial.println("NEXT");
 
       handle_next_button();
     }
@@ -102,7 +102,7 @@ void read_buttons()
       {
         button_state->button_next_released = true;
         button_state->button_next_pressed = false;    
-        Serial.println("next released");
+        if (DEBUG) Serial.println("next released");
       }
   }  
 
@@ -113,7 +113,7 @@ void read_buttons()
     {
       button_state->button_prev_released = false;
       button_state->button_prev_pressed = true;
-      Serial.println("PREV");
+      if (DEBUG) Serial.println("PREV");
 
       handle_prev_button();
     }
@@ -124,7 +124,7 @@ void read_buttons()
       {
         button_state->button_prev_released = true;
         button_state->button_prev_pressed = false;    
-        Serial.println("prev released");
+        if (DEBUG) Serial.println("prev released");
       }
   }  
   
