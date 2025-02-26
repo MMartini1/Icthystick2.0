@@ -1,4 +1,4 @@
-#include <SoftwareSerial.h>
+#include <SoftwareSerial.h> // https://docs.arduino.cc/learn/built-in-libraries/software-serial/
 #include <EEPROM.h>
 #include <ArduinoBLE.h>
 
@@ -84,6 +84,9 @@ void send_ble_measurement()
     char send_str[20];
     sprintf(send_str, "%7.1f", system_state.display_state.current_measurement);
     new_measurement.writeValue(send_str);  
+
+    // MM 2/26/2025 add this line to see measurement on serial console
+    Serial.println(send_str);
 //  }
   
 }
@@ -91,7 +94,7 @@ void send_ble_measurement()
 void pulse_led()
 {
   digitalWrite(LED_PIN, 1);
-  delay(100);
+  delay(200);  // MM 2/26/2025 increase on time of LED
   digitalWrite(LED_PIN, 0);  
 }
 
@@ -107,6 +110,9 @@ void process_measurement(long measurement_us)
   update_lcd_measurement_current();
   update_lcd_measurement_last();
   pulse_led();
+  if(system_state.display_state.sound_on){
+    beep();    // MM 2/26/2025 need sound too
+  }
   send_ble_measurement();
   
 }

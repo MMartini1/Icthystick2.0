@@ -29,3 +29,10 @@ void move_cursor(char line, char pos)
   c+= pos;
   LCD_Serial.write(c);  
 }
+
+// MM 2/26/2025 so we can beep
+void beep()
+{
+  LCD_Serial.write(212);  // 1/4 note
+  LCD_Serial.write(227);  // play E
+}

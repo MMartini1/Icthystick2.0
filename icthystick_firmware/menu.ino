@@ -20,12 +20,24 @@ void menu_setup(display_state_t* ds)
   display_state->display_menu.enter = toggle_lcd_backlight;
   display_state->display_menu.next = 0;
   display_state->display_menu.prev = 0;
-  display_state->display_menu.menu = switch_menu_to_measurement;
+  display_state->display_menu.menu = switch_menu_to_sound;  // MM 2/26/2025 changed from switch_menu_to_measurement
   display_state->display_menu.options = 1;
   display_state->display_menu.selected_option = 0;
   display_state->display_menu.option_rows[0] = 3;
   display_state->display_menu.option_cols[0] = 15; 
 
+// MM 2/26/2025 try to add sound menu option
+  display_state->sound_menu.redraw = draw_lcd_sound_background;
+  display_state->sound_menu.enter = toggle_lcd_sound;
+  display_state->sound_menu.next = 0;
+  display_state->sound_menu.prev = 0;
+  display_state->sound_menu.menu = switch_menu_to_measurement;
+  display_state->sound_menu.options = 1;
+  display_state->sound_menu.selected_option = 0;
+  display_state->sound_menu.option_rows[0] = 3;
+  display_state->sound_menu.option_cols[0] = 15; 
+
+//
 
   display_state->measurement_menu.redraw = draw_lcd_measurement_background;
   display_state->measurement_menu.enter = measurement_enter_callback;
@@ -96,7 +108,6 @@ void menu_setup(display_state_t* ds)
   display_state->display_backlight_on= false;
   display_state->sound_on=false;
   display_state->display_state= DISPLAY_STATE_MAIN;
-
   
 
 //  draw_lcd_main_background();
@@ -162,7 +173,9 @@ void handle_prev_button()
 void draw_splash_screen()
 {
   move_cursor(1, 0);
-  LCD_Serial.write("Icthystick V2.0.0");   
+  //LCD_Serial.write("Icthystick V2.0.0");   
+  LCD_Serial.write("Icthystick V");
+  LCD_Serial.write(VER);   
   move_cursor(2, 0);
   LCD_Serial.write("Booting...");   
   
@@ -440,6 +453,13 @@ void switch_menu_to_measurement()
   display_state->active_menu->redraw();  
 }
 
+// MM 2/26/2025
+void switch_menu_to_sound()
+{
+  display_state->active_menu = &display_state->sound_menu;
+  display_state->active_menu->redraw();  
+}
+
 void switch_menu_to_calibration()
 {
   display_state->active_menu = &display_state->calibration_menu;
@@ -473,6 +493,14 @@ void toggle_lcd_backlight()
   {
     backlight_off();
   }
+}
+
+// MM 2/26/2025
+void toggle_lcd_sound()
+{
+  Serial.println("Toggle sound");
+  display_state->sound_on=!display_state->sound_on;
+  update_lcd_sound_status();  
 }
 
 void toggle_measurement_units()
