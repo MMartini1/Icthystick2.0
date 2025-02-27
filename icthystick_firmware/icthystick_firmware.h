@@ -9,10 +9,14 @@
 //   add output formats
 //   print only measurement to serial output unless in debug mode
 
+// serial number of box
+const char IFMB[] = "000";
 
 const char VER[] = "2.1.1"; // 2/26/2025
 
 const unsigned long MAX_DELAY_US = 10000;
+const unsigned int MAX_BLE_VALUESIZE = 50;
+
 // updated 2/25/2025 M. Martini from 10 to 5
 const unsigned int BLANK_TIME_US = 5;
 const unsigned int LCD_LEN = 20;
@@ -26,9 +30,6 @@ const unsigned int LED_PIN = 0;
 
 // set to true for feedback on menu button presses and bluetooth status
 const bool DEBUG = 0;  
-
-// serial number of box
-const char IFMB[] = "001";
 
 // output format types
 

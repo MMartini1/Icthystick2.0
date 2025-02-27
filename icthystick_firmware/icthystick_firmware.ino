@@ -12,7 +12,7 @@
 SoftwareSerial LCD_Serial(D6, D7, false);
 
 BLEService newService("1821"); // creating the service
-BLECharacteristic new_measurement("27A4", BLERead | BLENotify  | BLEWrite,10);
+BLECharacteristic new_measurement("27A4", BLERead | BLENotify  | BLEWrite, MAX_BLE_VALUESIZE); // was 10
 
 BLEByteCharacteristic switchChar("2A57", BLERead | BLEWrite); // creating the LED characteristic
 
@@ -102,9 +102,9 @@ void send_ble_measurement()
         sprintf(send_str, "%05.1frr\n", system_state.display_state.current_measurement);
         break;
       default:  // CFF format
-        sprintf(send_str, "%7.1f", system_state.display_state.current_measurement);
+        sprintf(send_str, "%7.1f\n", system_state.display_state.current_measurement);
     }
-    new_measurement.writeValue(send_str);  // this goes to Bluetooth
+    if (send_str < MAX_BLE_VALUESIZE) new_measurement.writeValue(send_str);  // this goes to Bluetooth
     // MM 2/26/2025 add this line to see measurement on serial console
     Serial.println(send_str);
 //  }
