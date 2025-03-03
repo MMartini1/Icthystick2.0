@@ -15,7 +15,6 @@ void menu_setup(display_state_t* ds)
   display_state->main_menu.options = 0;
   display_state->main_menu.selected_option = 0;
 
-
   display_state->display_menu.redraw = draw_lcd_display_background;
   display_state->display_menu.enter = toggle_lcd_backlight;
   display_state->display_menu.next = 0;
@@ -26,7 +25,6 @@ void menu_setup(display_state_t* ds)
   display_state->display_menu.option_rows[0] = 3;
   display_state->display_menu.option_cols[0] = 15; 
 
-// MM 2/26/2025 try to add sound menu option
   display_state->sound_menu.redraw = draw_lcd_sound_background;
   display_state->sound_menu.enter = toggle_lcd_sound;
   display_state->sound_menu.next = 0;
@@ -37,13 +35,11 @@ void menu_setup(display_state_t* ds)
   display_state->sound_menu.option_rows[0] = 3;
   display_state->sound_menu.option_cols[0] = 15; 
 
-//
-
   display_state->measurement_menu.redraw = draw_lcd_measurement_background;
   display_state->measurement_menu.enter = measurement_enter_callback;
   display_state->measurement_menu.next = next_item_callback;
   display_state->measurement_menu.prev = prev_item_callback;
-  display_state->measurement_menu.menu = switch_menu_to_calibration;
+  display_state->measurement_menu.menu = switch_menu_to_format;
   display_state->measurement_menu.options = 2;
   display_state->measurement_menu.selected_option = 0;
   display_state->measurement_menu.option_rows[0] = 2;
@@ -51,6 +47,15 @@ void menu_setup(display_state_t* ds)
   display_state->measurement_menu.option_rows[1] = 3;
   display_state->measurement_menu.option_cols[1] = 8;   
   
+  display_state->format_menu.redraw = draw_lcd_format_background;
+  display_state->format_menu.enter = toggle_format_type;
+  display_state->format_menu.next = 0;
+  display_state->format_menu.prev = 0;
+  display_state->format_menu.menu = switch_menu_to_calibration;
+  display_state->format_menu.options = 1;
+  display_state->format_menu.selected_option = 0;
+  display_state->format_menu.option_rows[0] = 3;
+  display_state->format_menu.option_cols[0] = 15; 
 
   display_state->calibration_menu.redraw = draw_lcd_calibration_background;
   display_state->calibration_menu.enter = calibration_enter_callback;
@@ -75,7 +80,7 @@ void menu_setup(display_state_t* ds)
   display_state->calibration_run_menu.menu = abort_calibration_callback; 
   display_state->calibration_run_menu.options = 0;
   display_state->calibration_run_menu.selected_option = 0;
-  
+
   display_state->calibration_results_menu.redraw = draw_lcd_calibration_results_background;
   display_state->calibration_results_menu.enter = 0;
   display_state->calibration_results_menu.next = 0;
@@ -108,6 +113,7 @@ void menu_setup(display_state_t* ds)
   display_state->display_backlight_on= false;
   display_state->sound_on=false;
   display_state->display_state= DISPLAY_STATE_MAIN;
+  display_state->output_format_type=ICKY_FORMAT;
   
 
 //  draw_lcd_main_background();
@@ -278,6 +284,25 @@ void update_measurement_menu_units()
   }
 }
 
+void update_format_menu_format()
+{
+  move_cursor(2,8);
+  switch(display_state->output_format_type){
+    case ICKY_FORMAT:
+      LCD_Serial.write("Icthystick");
+      break;
+    case SCAN_FORMAT:
+      LCD_Serial.write("Scantrol  ");
+      break;
+    case LMNO_FORMAT:
+      LCD_Serial.write("Limno     ");
+      break;
+    case CFF_FORMAT:
+      LCD_Serial.write("CFF       ");
+      break;
+  }
+}
+
 void update_measurement_menu_precision()
 {
   move_cursor(3,8);
@@ -410,6 +435,19 @@ void draw_lcd_measurement_background()
 
 }
 
+void draw_lcd_format_background()
+{
+  clear_lcd();
+  move_cursor(0,0);
+  LCD_Serial.write("Format Menu:");
+  move_cursor(2,0);
+  LCD_Serial.write(" FORMAT:");
+  update_format_menu_format();
+  update_cursor_pos(); 
+  
+
+}
+
 void draw_lcd_save_config_background()
 {
   clear_lcd();
@@ -459,6 +497,12 @@ void switch_menu_to_measurement()
 void switch_menu_to_sound()
 {
   display_state->active_menu = &display_state->sound_menu;
+  display_state->active_menu->redraw();  
+}
+
+void switch_menu_to_format()
+{
+  display_state->active_menu = &display_state->format_menu;
   display_state->active_menu->redraw();  
 }
 
@@ -529,6 +573,27 @@ void toggle_measurement_precision()
     display_state->display_precision = PRECISION_DEC_1;  
   }
   update_measurement_menu_precision();
+}
+
+void toggle_format_type()
+{
+  if (display_state->output_format_type == ICKY_FORMAT)
+  {
+    display_state->output_format_type = SCAN_FORMAT;  
+  }  
+  else if (display_state->output_format_type == SCAN_FORMAT)
+  {
+    display_state->output_format_type = LMNO_FORMAT;   
+  }
+  else if (display_state->output_format_type == LMNO_FORMAT)
+  {
+    display_state->output_format_type = CFF_FORMAT;   
+  }
+  else if (display_state->output_format_type == CFF_FORMAT)
+  {
+    display_state->output_format_type = ICKY_FORMAT;   
+  }
+  update_format_menu_format();
 }
 
 void next_item_callback()

@@ -81,11 +81,11 @@ void send_ble_measurement()
 
     if (DEBUG) Serial.print("Connected to central: ");
     
-    char send_str[50]; // increased from 20 to accommodate scantrol format
+    char send_str[MAX_BLE_VALUESIZE]; // increased from 20 to accommodate scantrol format
     float m;
 
     // current_measurement is in mm
-    switch (system_state.measurement_state.output_format){
+    switch (system_state.display_state.output_format_type){
       case ICKY_FORMAT:  // in mm or cm?
         if(system_state.display_state.display_units == UNIT_MM) {    
           sprintf(send_str, "$IFMB%s,%05.1f,mm\n", IFMB, system_state.display_state.current_measurement);
@@ -101,10 +101,12 @@ void send_ble_measurement()
       case LMNO_FORMAT:  // in mm
         sprintf(send_str, "%05.1frr\n", system_state.display_state.current_measurement);
         break;
-      default:  // CFF format
+      case CFF_FORMAT:  // CFF format
         sprintf(send_str, "%7.1f\n", system_state.display_state.current_measurement);
+        break;
+        
     }
-    if (send_str < MAX_BLE_VALUESIZE) new_measurement.writeValue(send_str);  // this goes to Bluetooth
+    if (sizeof(send_str) <= MAX_BLE_VALUESIZE) new_measurement.writeValue(send_str);  // this goes to Bluetooth
     // MM 2/26/2025 add this line to see measurement on serial console
     Serial.println(send_str);
 //  }

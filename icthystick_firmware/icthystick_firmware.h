@@ -8,14 +8,20 @@
 // - 2.1.1
 //   add output formats
 //   print only measurement to serial output unless in debug mode
+// - 2.2.0
+//   update manu system to select output formats
 
-// serial number of box
-const char IFMB[] = "000";
+// user defines
+const char IFMB[] = "000";  // serial number of box
+const char VER[] = "2.2.0"; // 3/3/2025
+// to change the default output format
+// in menu.h change e_output_format output_format_type = ICKY_FORMAT;
+// set to true for feedback on menu button presses and bluetooth status
+const bool DEBUG = 1;  
 
-const char VER[] = "2.1.1"; // 2/26/2025
-
+// other defines
 const unsigned long MAX_DELAY_US = 10000;
-const unsigned int MAX_BLE_VALUESIZE = 50;
+const unsigned int MAX_BLE_VALUESIZE = 80;
 
 // updated 2/25/2025 M. Martini from 10 to 5
 const unsigned int BLANK_TIME_US = 5;
@@ -28,13 +34,3 @@ const unsigned int BUTTON_ENTER = 6;
 
 const unsigned int LED_PIN = 0;
 
-// set to true for feedback on menu button presses and bluetooth status
-const bool DEBUG = 0;  
-
-// output format types
-
-const unsigned int DEFAULT_OUTPUT_FORMAT = 0;
-const unsigned int ICKY_FORMAT = 0;
-const unsigned int SCAN_FORMAT = 1;
-const unsigned int LMNO_FORMAT = 2;
-const unsigned int SERIAL_BAUD_RATE = 115200;
